@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.5' apply false
+}
+
+description = "Sample"
+
+allprojects {
+
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+	apply plugin: 'io.spring.dependency-management'
+
+	group 'demo-sample'
+	version '0.0.1-SNAPSHOT'
+
+	dependencyManagement {
+		imports {
+			mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+		}
+	}
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+	}
+
+	repositories {
+		maven { url = 'https://maven.aliyun.com/repository/public' }
+//		mavenCentral()
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
+}
+
+configure(rootProject) {
+	apply plugin: 'org.springframework.boot'
+
+	dependencies {
+		implementation "org.springframework.boot:spring-boot-starter-web"
+		runtimeOnly 'com.h2database:h2'
+	}
+}
+
