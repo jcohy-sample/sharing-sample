@@ -1,12 +1,28 @@
+
+### 查询
 GET http://localhost:8080/person/1
 
-###
+### 新增
+POST http://localhost:8080/person
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "jcohy06",
+  "age": 30,
+  "province": "杭州"
+}
+
+### 更新
 POST http://localhost:8080/person
 Content-Type: application/json
 
 {
   "id": 6,
   "name": "jcohy06",
-  "age": 29,
+  "age": 33,
   "province": "杭州"
 }
+
+### 删除
+DELETE http://localhost:8080/person/6

@@ -36,34 +36,20 @@ public class DemoApplication {
 	}
 
 
-	@GetMapping(value = "/person/{id:\\d+}")
-	public Person getPerson(@PathVariable("id") Integer id) {
-		personRepository.findById(id)
-				.ifPresent(person -> {
-					System.out.println(person);
-					personProvinceRepository.findByName(person.getProvince());
-				});
-		return personRepository.findById(id).get();
-	}
 
-	@PostMapping(value = "/person")
-	public Person savePerson(@RequestBody Person person) {
-		ShardingField annotation = AnnotationUtils.findAnnotation(person.getClass(), ShardingField.class);
-		return personRepository.save(person);
-	}
 
 	@Bean
 	CommandLineRunner commandLineRunner() {
 
 		// 构造数据
 		return args -> {
-			personRepository.saveAll(List.of(
-					new Person(1, "jcohy01", 22, "陕西"),
-					new Person(2, "jcohy02", 22, "四川"),
-					new Person(3, "jcohy03", 22, "湖南"),
-					new Person(4, "jcohy04", 22, "上海"),
-					new Person(5, "jcohy05", 22, "北京")
-			));
+//			personRepository.saveAll(List.of(
+//					new Person(1, "jcohy01", 22, "陕西"),
+//					new Person(2, "jcohy02", 22, "四川"),
+//					new Person(3, "jcohy03", 22, "湖南"),
+//					new Person(4, "jcohy04", 22, "上海"),
+//					new Person(5, "jcohy05", 22, "北京")
+//			));
 
 //			personRepository.save()
 		};

@@ -14,4 +14,9 @@ spring:
     console:
       path: /h2-console
       enabled: true
+db:
+  sharding:
+    dbs:
+      person_report: 2
+      person: 4
 #debug: true
