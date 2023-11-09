@@ -1,6 +1,5 @@
 package com.demo.controller;
 
-import com.demo.commons.annotations.ShardingField;
 import com.demo.domain.Person;
 import com.demo.repository.PersonProvinceRepository;
 import com.demo.repository.PersonRepository;
@@ -40,7 +39,7 @@ public class PersonController {
 	public Person getPerson(@PathVariable("id") Integer id) {
 		personRepository.findById(id)
 				.ifPresent(person -> {
-					System.out.println("PersonController" + person);
+					System.out.println("PersonController" + person.toString());
 					personProvinceRepository.findByProvince(person.getProvince());
 				});
 		return personRepository.findById(id).get();

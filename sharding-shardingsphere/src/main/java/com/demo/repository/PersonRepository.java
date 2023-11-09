@@ -1,6 +1,6 @@
 package com.demo.repository;
 
-import com.demo.domain.PersonProvince;
+import com.demo.domain.Person;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 2023.0.1 2023/11/8:15:54
  * @since 2023.0.1
  */
-public interface PersonProvinceRepository extends JpaRepository<PersonProvince, Integer> {
+public interface PersonRepository extends JpaRepository<Person, Integer> {
 
-	PersonProvince findByProvince(String province);
+	Person findByProvince(String province);
 }

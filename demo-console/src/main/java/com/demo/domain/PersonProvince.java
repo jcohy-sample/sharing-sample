@@ -22,7 +22,7 @@ public class PersonProvince extends ShardingDomain {
 	private Integer userId;
 
 	@ShardingField
-	private String name;
+	private String province;
 
 	private String record;
 
@@ -31,20 +31,20 @@ public class PersonProvince extends ShardingDomain {
 	public PersonProvince() {
 	}
 
-	public PersonProvince(Integer id, Integer userId, String name, String record, String remark) {
+	public PersonProvince(Integer id, Integer userId, String province, String record, String remark) {
 		this.id = id;
 		this.userId = userId;
-		this.name = name;
+		this.province = province;
 		this.record = record;
 		this.remark = remark;
 	}
 
-	public String getName() {
-		return name;
+	public String getProvince() {
+		return province;
 	}
 
-	public PersonProvince setName(String name) {
-		this.name = name;
+	public PersonProvince setProvince(String name) {
+		this.province = name;
 		return this;
 	}
 
@@ -89,7 +89,7 @@ public class PersonProvince extends ShardingDomain {
 		return "PersonProvince{" +
 				"id=" + id +
 				", userId=" + userId +
-				", name='" + name + '\'' +
+				", name='" + province + '\'' +
 				", record='" + record + '\'' +
 				", remark='" + remark + '\'' +
 				'}';

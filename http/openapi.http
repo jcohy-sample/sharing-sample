@@ -7,10 +7,10 @@ POST http://localhost:8080/person
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 6,
   "name": "jcohy06",
   "age": 30,
-  "province": "杭州"
+  "province": "陕西"
 }
 
 ### 更新
