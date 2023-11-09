@@ -1,10 +1,17 @@
 package com.demo.commons;
 
+import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.demo.commons.annotations.ShardingField;
+
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Copyright: Copyright (c) 2023 <a href="https://www.jcohy.com" target="_blank">jcohy.com</a>
@@ -37,9 +44,29 @@ public class Utils {
 		}
 		return builder.toString().toLowerCase(Locale.ROOT);
 	}
-
-
 	private static boolean isUnderscoreRequired(final char before, final char current, final char after) {
 		return Character.isLowerCase(before) && Character.isUpperCase(current) && Character.isLowerCase(after);
+	}
+
+	public static String getShardingField(Class<?> clazz) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			// 判断字段上是否有指定的注解
+			ShardingField annotation = AnnotationUtils.findAnnotation(field, ShardingField.class);
+			if (annotation != null) {
+				// todo 仅支持一个字段,匹配到第一个标有 ShardingField 注解的就返回
+				return field.getName();
+			}
+		}
+		return "";
+	}
+
+	public static boolean isNotNull(Object... objects) {
+		for (Object object : objects) {
+			if(Objects.isNull(object)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

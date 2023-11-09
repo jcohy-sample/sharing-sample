@@ -6,6 +6,8 @@ import javax.persistence.PersistenceUnit;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.event.spi.PreDeleteEventListener;
+import org.hibernate.event.spi.PreInsertEventListener;
+import org.hibernate.event.spi.PreLoadEventListener;
 import org.hibernate.event.spi.PreUpdateEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -37,6 +39,12 @@ public class HibernateEventRegistry {
 	@Autowired
 	private SaveOrUpdateEventListener saveOrUpdateEventListener;
 
+	@Autowired
+	private PreInsertEventListener preInsertEventListener;
+
+	@Autowired
+	private PreLoadEventListener preLoadEventListener;
+
 	@PostConstruct
 	protected void init() {
 		EventListenerRegistry registry = entityManagerFactory.unwrap(SessionFactoryImpl.class).getServiceRegistry()
@@ -44,6 +52,8 @@ public class HibernateEventRegistry {
 		registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListeners(preUpdateEventListener);
 		registry.getEventListenerGroup(EventType.PRE_DELETE).appendListeners(PreDeleteEventListenerImp);
 		registry.getEventListenerGroup(EventType.SAVE_UPDATE).appendListeners(saveOrUpdateEventListener);
+		registry.getEventListenerGroup(EventType.PRE_INSERT).appendListeners(preInsertEventListener);
+		registry.getEventListenerGroup(EventType.PRE_LOAD).appendListeners(preLoadEventListener);
 	}
 
 }

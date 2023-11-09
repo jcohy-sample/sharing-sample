@@ -15,9 +15,9 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
  * @version 2023.0.1 2023/11/9:10:24
  * @since 2023.0.1
  */
-public class MyIntegrator implements Integrator {
+public class ShardingIntegrator implements Integrator {
 
-	public static final MyIntegrator INSTANCE = new MyIntegrator();
+	public static final ShardingIntegrator INSTANCE = new ShardingIntegrator();
 
 	@Override
 	public void integrate(
@@ -32,7 +32,6 @@ public class MyIntegrator implements Integrator {
 		eventListenerRegistry.appendListeners(EventType.PRE_UPDATE, new PreUpdateEventListenerImp());
 		eventListenerRegistry.appendListeners(EventType.SAVE, new SaveOrUpdateEventListenerImpl());
 		eventListenerRegistry.appendListeners(EventType.PRE_DELETE, new PreDeleteEventListenerImp());
-		eventListenerRegistry.appendListeners(EventType.POST_UPDATE, new PostUpdateEventListenerImp());
 	}
 
 	@Override

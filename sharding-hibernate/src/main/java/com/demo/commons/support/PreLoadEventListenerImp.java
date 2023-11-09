@@ -2,6 +2,8 @@ package com.demo.commons.support;
 
 import org.hibernate.event.spi.PreDeleteEvent;
 import org.hibernate.event.spi.PreDeleteEventListener;
+import org.hibernate.event.spi.PreLoadEvent;
+import org.hibernate.event.spi.PreLoadEventListener;
 
 import org.springframework.stereotype.Component;
 
@@ -14,11 +16,11 @@ import org.springframework.stereotype.Component;
  * @since 2023.0.1
  */
 @Component
-public class PreDeleteEventListenerImp implements PreDeleteEventListener {
+public class PreLoadEventListenerImp implements PreLoadEventListener {
 
 	@Override
-	public boolean onPreDelete(PreDeleteEvent e) {
-
-		throw new RuntimeException("Cannot delete");
+	public void onPreLoad(PreLoadEvent event) {
+		System.out.println("onPreLoad ====");
+		System.out.println();
 	}
 }

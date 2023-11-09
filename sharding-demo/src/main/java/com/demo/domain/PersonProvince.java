@@ -1,5 +1,7 @@
 package com.demo.domain;
 
+import com.demo.commons.annotations.Sharding;
+import com.demo.commons.annotations.ShardingField;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -12,6 +14,7 @@ import javax.persistence.Id;
  * @since 2023.0.1
  */
 @Entity
+@Sharding
 public class PersonProvince {
 
 	@Id
@@ -19,6 +22,7 @@ public class PersonProvince {
 
 	private Integer userId;
 
+	@ShardingField
 	private String province;
 
 	private String record;

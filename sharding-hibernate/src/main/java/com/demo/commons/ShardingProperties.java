@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @version 2023.0.1 2023/11/8:15:11
  * @since 2023.0.1
  */
-@ConfigurationProperties("db.sharding")
+@ConfigurationProperties("sharding")
 public class ShardingProperties {
 
 	private int size = 1;

@@ -31,18 +31,6 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 public class ShardingAutoConfiguration {
 
-	private static final String STRATEGY = "strategy";
-
-	private static final String STANDARD = "STANDARD";
-
-	private static final String DB_SHARDING_ALGORITHM_NAME = "databaseShardingAlgorithm";
-
-	private static final String TABLE_SHARDING_ALGORITHM_NAME = "tableShardingAlgorithm";
-
-	private static final String CLASS_BASED = "CLASS_BASED";
-
-	private static final String ALGORITHM_CLASS_NAME = "algorithmClassName";
-
 	@Bean(name = "sharding")
 	public DataSource dataSource() throws SQLException {
 

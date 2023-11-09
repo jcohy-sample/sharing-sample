@@ -1,13 +1,15 @@
 package com.demo.commons.support;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-import com.demo.commons.core.ShardingDomain;
+import com.demo.commons.annotations.Sharding;
 import org.hibernate.event.spi.PreUpdateEvent;
 import org.hibernate.event.spi.PreUpdateEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,9 +27,8 @@ public class PreUpdateEventListenerImp implements PreUpdateEventListener {
 
 	@Override
 	public boolean onPreUpdate(PreUpdateEvent e) {
-
-		System.out.println("onPreUpdate====");
-		if (e.getEntity() instanceof ShardingDomain) {
+		System.out.println("onPreUpdate ====");
+		if (!Objects.isNull(AnnotationUtils.findAnnotation(e.getEntity().getClass(), Sharding.class))) {
 			String[] propertyNames = e.getPersister().getEntityMetamodel().getPropertyNames();
 			Object[] oldInstance = e.getOldState();
 			Object[] newInstance = e.getState();

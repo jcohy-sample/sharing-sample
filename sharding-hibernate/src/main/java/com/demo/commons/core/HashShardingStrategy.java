@@ -1,4 +1,4 @@
-package com.demo.commons.strategy;
+package com.demo.commons.core;
 
 import com.demo.commons.ShardingProperties;
 
@@ -19,8 +19,9 @@ public class HashShardingStrategy implements ShardingStrategy {
 	}
 
 	@Override
-	public String handler(String name) {
-		int i = name.hashCode() % properties.getSize();
-		return "user_province_" + i;
+	public String handler(String tableSourceName,String value) {
+
+		int i = value.hashCode() % properties.getDbs().get(tableSourceName);
+		return tableSourceName + "_"+ i;
 	}
 }

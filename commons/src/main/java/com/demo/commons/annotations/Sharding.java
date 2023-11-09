@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @since 2023.0.1
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Documented
-public @interface ShardingField {
+public @interface Sharding {
 }

@@ -18,7 +18,7 @@ public class PreDeleteEventListenerImp implements PreDeleteEventListener {
 
 	@Override
 	public boolean onPreDelete(PreDeleteEvent e) {
-
+		System.out.println("onPreDelete ====");
 		throw new RuntimeException("Cannot delete");
 	}
 }

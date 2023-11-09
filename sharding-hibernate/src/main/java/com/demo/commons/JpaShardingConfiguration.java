@@ -1,6 +1,8 @@
 package com.demo.commons;
 
+import com.demo.commons.core.HashShardingStrategy;
 import com.demo.commons.core.ShardingSQLInterceptor;
+import com.demo.commons.core.ShardingStrategy;
 
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +25,11 @@ public class JpaShardingConfiguration {
 
 	public JpaShardingConfiguration(ShardingProperties properties) {
 		this.properties = properties;
+	}
+
+	@Bean
+	public ShardingStrategy shardingStrategy() {
+		return new HashShardingStrategy(properties);
 	}
 
 	@Bean
