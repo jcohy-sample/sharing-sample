@@ -83,4 +83,15 @@ public class PersonProvince extends ShardingDomain {
 		this.remark = remark;
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "PersonProvince{" +
+				"id=" + id +
+				", userId=" + userId +
+				", name='" + name + '\'' +
+				", record='" + record + '\'' +
+				", remark='" + remark + '\'' +
+				'}';
+	}
 }

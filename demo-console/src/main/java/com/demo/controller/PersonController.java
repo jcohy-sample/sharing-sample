@@ -40,10 +40,15 @@ public class PersonController {
 	public Person getPerson(@PathVariable("id") Integer id) {
 		personRepository.findById(id)
 				.ifPresent(person -> {
-					System.out.println(person);
+					System.out.println("PersonController" + person.toString());
 					personProvinceRepository.findByName(person.getProvince());
 				});
 		return personRepository.findById(id).get();
+	}
+
+	@GetMapping(value = "/province/{province}")
+	public Person getPersonByProvince(@PathVariable("province") String province) {
+		return personRepository.findByProvince(province);
 	}
 
 	@PostMapping

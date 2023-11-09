@@ -3,8 +3,10 @@ package com.demo.commons.core;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.demo.commons.ShardingProperties;
 import com.demo.commons.SpringContextHolder;
@@ -12,6 +14,15 @@ import com.demo.commons.Utils;
 import com.demo.commons.annotations.ShardingField;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.EntityMode;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
+import org.hibernate.engine.query.spi.QueryPlanCache;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.ParameterMetadata;
+import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.type.Type;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -30,8 +41,6 @@ public class ShardingSQLInterceptor extends EmptyInterceptor {
 	private final ThreadLocal<Map<Object, Object>> threadLocal = ThreadLocal.withInitial(HashMap::new);
 
 	private final Map<String,String> caches = new HashMap<>();
-
-	private List<String> entityNames;
 
 	public ShardingSQLInterceptor() {
 	}
@@ -86,7 +95,13 @@ public class ShardingSQLInterceptor extends EmptyInterceptor {
 
 	@Override
 	public String onPrepareStatement(String sql) {
+		ShardingProperties shardingProperties = SpringContextHolder.getBean(ShardingProperties.class);
+
+
+		System.out.println(sql);
 		try {
+
+
 			// 从 ThreadLocal 变量中获取参数，并进行处理
 			Map<Object, Object> params = threadLocal.get();
 //			for (Map.Entry<Object, Object> entry : params.entrySet()) {
@@ -98,15 +113,15 @@ public class ShardingSQLInterceptor extends EmptyInterceptor {
 //				// ...
 //			}
 
-			if(params.size() >0) {
-				String tablePhysicalName = params.get("tablePhysicalName").toString();
-				String tableName = params.get("tableName").toString();
-				sql = sql.replaceAll(tableName,tablePhysicalName);
-				System.out.println(sql);
-				System.out.println("=========== onPrepareStatement ===========");
-				threadLocal.get();
-				ShardingProperties properties = SpringContextHolder.getBean(ShardingProperties.class);
-			}
+//			if(params.size() >0) {
+//				String tablePhysicalName = params.get("tablePhysicalName").toString();
+//				String tableName = params.get("tableName").toString();
+//				sql = sql.replaceAll(tableName,tablePhysicalName);
+//				System.out.println(sql);
+//				System.out.println("=========== onPrepareStatement ===========");
+//				threadLocal.get();
+//				ShardingProperties properties = SpringContextHolder.getBean(ShardingProperties.class);
+//			}
 
 //		System.out.println("properties: " + properties.getDbs());
 			return super.onPrepareStatement(sql);
@@ -124,6 +139,18 @@ public class ShardingSQLInterceptor extends EmptyInterceptor {
 
 	@Override
 	public Object getEntity(String entityName, Serializable id) {
+//		try {
+//
+//			Class<?> aClass = Class.forName(entityName);
+//			String shardingField = getShardingField(aClass);
+//			Field declaredField = aClass.getDeclaredField(shardingField);
+//			declaredField.setAccessible(true);
+//			String o = (String)declaredField.get(aClass);
+//			System.out.println(o);
+//		}
+//		catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 		System.out.println("=========== getEntity ===========");
 		System.out.println(entityName);
 		return super.getEntity(entityName, id);
@@ -136,26 +163,60 @@ public class ShardingSQLInterceptor extends EmptyInterceptor {
 		return super.instantiate(entityName, entityMode, id);
 	}
 
+	@Override
+	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
+		System.out.println("=========== onFlushDirty ===========");
+		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
+	}
+
+	@Override
+	public int[] findDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
+		System.out.println("=========== findDirty ===========");
+
+		return super.findDirty(entity, id, currentState, previousState, propertyNames, types);
+	}
+
+	@Override
+	public void preFlush(Iterator entities) {
+		System.out.println("=========== preFlush ===========");
+		super.preFlush(entities);
+	}
 
 	public String getShardingField(Object entity) {
-		String fieldValue = "";
+		String shardingField = "";
 		String entityName = entity.getClass().getName();
-
 		if(StringUtils.hasText(caches.get(entityName))) {
-			fieldValue = caches.get(entityName);
+			shardingField = caches.get(entityName);
 		} else {
-			Class<?> clazz = entity.getClass();
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				// 判断字段上是否有指定的注解
-				ShardingField annotation = AnnotationUtils.findAnnotation(field, ShardingField.class);
-				if (annotation != null) {
-					// todo 仅支持一个字段,匹配到第一个标有 ShardingField 注解的就返回
-					fieldValue = field.getName();
-					caches.put(entityName,field.getName());
-				}
+			shardingField = getShardingField(entity.getClass());
+			caches.put(entityName,shardingField);
+		}
+		return shardingField;
+	}
+
+	public String getShardingField(Class<?> clazz) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			// 判断字段上是否有指定的注解
+			ShardingField annotation = AnnotationUtils.findAnnotation(field, ShardingField.class);
+			if (annotation != null) {
+				// todo 仅支持一个字段,匹配到第一个标有 ShardingField 注解的就返回
+				return field.getName();
 			}
 		}
-		return fieldValue;
+		return "";
 	}
+
+
+	//	private List<String> getParametersFromSQL(String sql) {
+//		SessionFactory sessionFactory = SpringContextHolder.getBean(SessionFactory.class);
+//		try (Session session = sessionFactory.openSession()) {
+//			NativeQuery<?> query = session.createNativeQuery(sql);
+//			Q parameterMetadata = query.unwrap(NativeQueryImpl.class).getQueryParameters();
+//			return parameterMetadata.getPositionalParameterDescriptors()
+//					.stream()
+//					.map(ParameterDescriptor::getName)
+//					.collect(Collectors.toList());
+//		}
+//	}
 }

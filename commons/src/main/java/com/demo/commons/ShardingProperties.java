@@ -1,5 +1,6 @@
 package com.demo.commons;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,7 +19,6 @@ public class ShardingProperties {
 	private int size = 1;
 
 	private Map<String, Integer> dbs;
-
 
 	public ShardingProperties() {
 	}

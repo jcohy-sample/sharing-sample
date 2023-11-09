@@ -25,4 +25,7 @@ Content-Type: application/json
 }
 
 ### 删除
-DELETE http://localhost:8080/person/6
+DELETE http://localhost:8080/person/1
+
+### 根据省份查询
+GET http://localhost:8080/person/province/杭州

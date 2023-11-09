@@ -72,4 +72,15 @@ public class Person extends ShardingDomain {
 		this.province = province;
 		return this;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Person{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", age=" + age +
+				", province='" + province + '\'' +
+				'}';
+	}
 }
