@@ -1,6 +1,7 @@
 rootProject.name = 'demo'
 
-include 'demo-console'
 include 'commons'
+include 'sharding-demo'
 include 'sharding-jpa'
 include 'sharding-shardingsphere'
+include 'sharding-hibernate'

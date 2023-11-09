@@ -1,7 +1,5 @@
 dependencies {
-	implementation 'org.apache.shardingsphere:shardingsphere-jdbc-core-spring-boot-starter:5.2.0'
+	api 'org.apache.shardingsphere:shardingsphere-jdbc-core-spring-boot-starter:5.2.0'
 	api 'org.springframework.boot:spring-boot-starter-data-jpa'
 	api 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

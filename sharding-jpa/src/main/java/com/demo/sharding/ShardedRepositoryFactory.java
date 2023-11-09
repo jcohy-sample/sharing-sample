@@ -25,7 +25,8 @@ public class ShardedRepositoryFactory extends JpaRepositoryFactory {
 		Class<?> repositoryInterface = information.getRepositoryInterface();
 		if (ShardedRepository.class.isAssignableFrom(repositoryInterface)) {
 			return new ShardedRepositoryImpl<>(information.getDomainType(), entityManager);
-		} else {
+		}
+		else {
 			return super.getTargetRepository(information, entityManager);
 		}
 	}
@@ -34,7 +35,8 @@ public class ShardedRepositoryFactory extends JpaRepositoryFactory {
 	protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
 		if (ShardedRepository.class.isAssignableFrom(metadata.getRepositoryInterface())) {
 			return ShardedRepositoryImpl.class;
-		} else {
+		}
+		else {
 			return super.getRepositoryBaseClass(metadata);
 		}
 	}
