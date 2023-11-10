@@ -2,9 +2,8 @@ package com.demo.domain;
 
 import com.demo.commons.annotations.Sharding;
 import com.demo.commons.annotations.ShardingField;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -20,12 +19,12 @@ import javax.persistence.Id;
 public class PersonProvince {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	private Integer userId;
 
 	@ShardingField
+	@Column(name = "province", updatable = false)
 	private String province;
 
 	private String record;

@@ -1,5 +1,5 @@
 dependencies {
-	api(project(":commons"))
+	api(project(":sharding-commons"))
 	api 'org.apache.shardingsphere:shardingsphere-jdbc-core-spring-boot-starter:5.2.0'
 	api 'org.springframework.boot:spring-boot-starter-data-jpa'
 	api 'org.springframework.boot:spring-boot-starter-web'

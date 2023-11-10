@@ -15,9 +15,9 @@ public class HashActualDataNode implements ActualDataNode {
 
 	@Override
 	public String actualDataNode(ShardingAlgorithms shardingAlgorithms) {
-		if(shardingAlgorithms.getShardingType().equals(ShardingType.HASH)) {
+		if (shardingAlgorithms.getShardingType().equals(ShardingType.HASH)) {
 			int count = Integer.parseInt(shardingAlgorithms.getShardingCount()) - 1;
-			return String.format("_$->{0..%s}",count);
+			return String.format("_$->{0..%s}", count);
 		}
 		return "";
 	}

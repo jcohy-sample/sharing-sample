@@ -9,13 +9,13 @@ package com.demo.props;
  * @since 2023.0.1
  */
 public enum ShardingType {
-	HASH("HASH_MOD"),DATA("DATA");
+	HASH("HASH_MOD"), DATA("DATA");
+
+	private String value;
 
 	ShardingType(String value) {
 		this.value = value;
 	}
-
-	private String value;
 
 	public String getValue() {
 		return value;

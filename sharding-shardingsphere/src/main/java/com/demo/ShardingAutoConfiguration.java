@@ -23,7 +23,6 @@ import org.apache.shardingsphere.sharding.api.config.strategy.sharding.StandardS
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -41,9 +40,9 @@ import org.springframework.context.annotation.DependsOn;
 @EnableConfigurationProperties(ShardingProperties.class)
 public class ShardingAutoConfiguration {
 
-	private ActualDataNode actualDataNode;
-
 	private static final String shardingDatasource = "shardingDataSource";
+
+	private ActualDataNode actualDataNode;
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -80,7 +79,7 @@ public class ShardingAutoConfiguration {
 		// 配置添加表规则
 		tables.forEach(table -> {
 			String actualDataNodes = shardingDatasource + "." + table.getTable() + actualDataNode.actualDataNode(table.getShardingAlgorithms());
-			ShardingTableRuleConfiguration shardingTableRuleConfiguration = new ShardingTableRuleConfiguration(table.getTable(),actualDataNodes );
+			ShardingTableRuleConfiguration shardingTableRuleConfiguration = new ShardingTableRuleConfiguration(table.getTable(), actualDataNodes);
 			ShardingStrategyConfiguration strategyConfiguration = new StandardShardingStrategyConfiguration(table.getShardingColumn(), table.getShardingAlgorithms().getName());
 			shardingTableRuleConfiguration.setTableShardingStrategy(strategyConfiguration);
 			shardingRuleConfig.getTables().add(shardingTableRuleConfiguration);

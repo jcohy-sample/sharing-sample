@@ -1,6 +1,6 @@
-rootProject.name = 'demo'
+rootProject.name = 'sharding-demo'
 
-include 'commons'
+include 'sharding-commons'
 include 'sharding-demo'
 include 'sharding-jpa'
 include 'sharding-shardingsphere'

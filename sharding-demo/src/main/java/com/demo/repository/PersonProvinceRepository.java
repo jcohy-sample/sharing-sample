@@ -15,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PersonProvinceRepository extends JpaRepository<PersonProvince, Integer> {
 
 	PersonProvince findByProvinceAndUserId(String province, Integer userId);
+
 }

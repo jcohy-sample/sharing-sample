@@ -9,6 +9,7 @@
 
 == 目录结构说明
 
+* commons: 通用类库
 * http: 存放 http 接口请求文件
 * sharding-hibernate：基于 Hibernate 实现分表操作（未完成，新增和插入已完成）
 * sharding-jpa：扩展 Spring Data Repository。自定义 JpaRepositoryFactoryBean 实现（未完成）
@@ -30,10 +31,11 @@
 
 === sharding-shardingsphere
 
-此模块使用配置文件的方式实现。配置项如下：
+此模块使用配置文件的方式实现。以下是一个简单的配置示例：
 
 [source,yaml]
 ----
+include::sharding-demo/src/main/resources/application.yaml[]
 ----
 
 [NOTE]
@@ -45,126 +47,38 @@
 
 [source,httprequest]
 ----
-
-### Person:查询
-GET http://localhost:8080/person/7
-
-### Person:新增
-POST http://localhost:8080/person
-Content-Type: application/json
-
-{
-  "name": "jcohy11",
-  "age": 41,
-  "province": "西藏"
-}
-
-### Person:更新
-POST http://localhost:8080/person
-Content-Type: application/json
-
-{
-  "id": 6,
-  "name": "jcohy06",
-  "age": 3344,
-  "province": "杭州"
-}
-
-### Person:删除
-DELETE http://localhost:8080/person/1
-
-### Person:查询 Person:Proviince
-GET http://localhost:8080/person/province/2
-
-
-### PersonProvince:查询
-GET http://localhost:8080/province/7
-
-### PersonProvince:新增
-POST http://localhost:8080/province
-Content-Type: application/json
-
-{
-  "userId": 21,
-  "province": "北京",
-  "record": "北京急诊记录",
-  "remark": "备注"
-}
-
-### PersonProvince:更新
-POST http://localhost:8080/province
-Content-Type: application/json
-
-{
-  "id": 10,
-  "userId": 6,
-  "province": "北京",
-  "record": "北京急诊记录",
-  "remark": "备注"
-}
-
-### PersonProvince:删除
-DELETE http://localhost:8080/province/10
+include::http/http.http[]
 ----
 
 == 测试
 
-打开
+打开 sharding-demo 模块的下的 build.gradle 文件。导入您需要测试的模块，如下：
+
 [source,groovy]
 ----
+dependencies {
+	implementation(project(":sharding-shardingsphere"))
+}
 ----
-
-===
 
 在 sharding-demo 模块，启动 DemoApplication，系统在启动时会自动创建表和数据。
 
-[source,java]
+[source,java,indent=0]
 ----
-@Bean
-CommandLineRunner commandLineRunner() {
-
-    // 构造数据
-    return args -> {
-        personRepository.saveAll(List.of(
-                new Person(1, "jcohy01", 21, "陕西"),
-                new Person(2, "jcohy02", 22, "四川"),
-                new Person(3, "jcohy03", 23, "湖南"),
-                new Person(4, "jcohy04", 24, "上海"),
-                new Person(5, "jcohy05", 25, "北京"),
-                new Person(6, "jcohy06", 26, "安徽"),
-                new Person(7, "jcohy07", 25, "陕西"),
-                new Person(8, "jcohy08", 25, "四川"),
-                new Person(9, "jcohy09", 25, "陕西"),
-                new Person(10, "jcohy10", 25, "湖南")
-        ));
-
-        personProvinceRepository.saveAll(List.of(
-                new PersonProvince(1,1,"陕西","陕西急诊记录","备注"),
-                new PersonProvince(2,2,"四川","四川急诊记录","备注"),
-                new PersonProvince(3,3,"湖南","湖南急诊记录","备注"),
-                new PersonProvince(4,4,"上海","上海急诊记录","备注"),
-                new PersonProvince(5,5,"北京","北京急诊记录","备注"),
-                new PersonProvince(6,6,"安徽","安徽急诊记录","备注"),
-                new PersonProvince(7,7,"陕西","安徽急诊记录","备注"),
-                new PersonProvince(8,8,"四川","安徽急诊记录","备注"),
-                new PersonProvince(9,9,"陕西","安徽急诊记录","备注"),
-                new PersonProvince(10,10,"湖南","安徽急诊记录","备注")
-        ));
-    };
-}
+include::sharding-demo/src/main/java/com/demo/DemoApplication.java[tag=add]
 ----
 
 登录 h2 控制台。http://localhost:8080/h2-console/ ，账号密码都是：sa。我们可以看到，
 
 * PERSON 表：10 条记录。
-* PERSON_PROVINCE_1 表： 0 条记录
-* PERSON_PROVINCE_2 表： 1 条记录，包含上海。
-* PERSON_PROVINCE_3 表： 1 条记录，包含安徽。
-* PERSON_PROVINCE_4 表： 2 条记录，包含湖南。
-* PERSON_PROVINCE_5 表： 5 条记录，包含陕西，四川
-* PERSON_PROVINCE_6 表： 1 条记录，包含北京
+* PERSON_PROVINCE_0 表： 0 条记录。
+* PERSON_PROVINCE_1 表： 2 条记录，包含上海。
+* PERSON_PROVINCE_2 表： 3 条记录，包含浙江，安徽。
+* PERSON_PROVINCE_3 表： 0 条记录。
+* PERSON_PROVINCE_4 表： 3 条记录，包含陕西，四川。
+* PERSON_PROVINCE_5 表： 2 条记录，包含北京。
 
-从上面可以看出，已经实现了分库分表，即同一省份的记录肯定在同一张表中。这里 PERSON_PROVINCE_5 表中包含了两个省份，时因为我们使用 哈希取余 算法。 不同省份有可能会在一张表中，但一个省份只能在一张表中。
+从上面可以看出，已经实现了分库分表，即同一省份的记录肯定在同一张表中。这里 PERSON_PROVINCE_4 表中包含了两个省份，时因为我们使用 哈希取余 算法。 不同省份有可能会在一张表中，但一个省份只能在一张表中。
 
 另外，我们可以调用提供的增删改查接口来测试。
 
