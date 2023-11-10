@@ -1,13 +1,11 @@
 package com.demo.commons;
 
-import com.demo.commons.core.HashShardingStrategy;
-import com.demo.commons.core.ShardingSQLInterceptor;
-import com.demo.commons.core.ShardingStrategy;
+import com.demo.commons.strategy.HashShardingStrategy;
+import com.demo.commons.strategy.ShardingStrategy;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Copyright: Copyright (c) 2023 <a href="https://www.jcohy.com" target="_blank">jcohy.com</a>
@@ -17,19 +15,12 @@ import org.springframework.context.annotation.Configuration;
  * @version 2023.0.1 2023/11/8:15:13
  * @since 2023.0.1
  */
-@Configuration
-@EnableConfigurationProperties(ShardingProperties.class)
+@AutoConfiguration
 public class JpaShardingConfiguration {
-
-	private final ShardingProperties properties;
-
-	public JpaShardingConfiguration(ShardingProperties properties) {
-		this.properties = properties;
-	}
 
 	@Bean
 	public ShardingStrategy shardingStrategy() {
-		return new HashShardingStrategy(properties);
+		return new HashShardingStrategy();
 	}
 
 	@Bean

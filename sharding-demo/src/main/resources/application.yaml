@@ -14,7 +14,12 @@ spring:
     console:
       path: /h2-console
       enabled: true
-sharding:
-    dbs:
-      person_province: 6
 #debug: true
+sharding:
+  tables:
+    - table: person_province
+      sharding-algorithms:
+        name: person-province-algorithm
+        sharding-count: 6
+        sharding-type: hash
+      sharding-column: province

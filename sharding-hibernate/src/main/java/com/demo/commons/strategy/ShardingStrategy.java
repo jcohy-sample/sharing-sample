@@ -1,4 +1,4 @@
-package com.demo.commons.core;
+package com.demo.commons.strategy;
 
 /**
  * Copyright: Copyright (c) 2023 <a href="https://www.jcohy.com" target="_blank">jcohy.com</a>
@@ -10,6 +10,6 @@ package com.demo.commons.core;
  */
 public interface ShardingStrategy {
 
-	String handler(String tableSourceName,String value);
+	String handler(String tableSourceName, String value, Integer size);
 
 }

@@ -7,11 +7,10 @@
 * Gradle 7.6.1
 * H2 数据库进行测试
 
-
 == 目录结构说明
 
 * http: 存放 http 接口请求文件
-* sharding-hibernate：基于 Hibernate 实现分表操作（未完成）
+* sharding-hibernate：基于 Hibernate 实现分表操作（未完成，新增和插入已完成）
 * sharding-jpa：扩展 Spring Data Repository。自定义 JpaRepositoryFactoryBean 实现（未完成）
 * sharding-shardingsphere：使用 ShardingSphere 完成（完成）
 * sharding-demo：测试工程
@@ -20,44 +19,102 @@
 
 系统主要包含两个表 person,person_province。 person 表不需要分库分表，person_province 表需要根据 person 表中的 province 字段进行分表。
 
-== 端点
+=== sharding-hibernate
+
+此模块使用基于注解的方式实现。使用 `@Sharding` 和 `@ShardingField`  注解来标记需要进行分表的操作
+
+* @Sharding：需要进行分表的实体
+* @ShardingField：分表的字段，目前仅支持单字段。
+
+=== sharding-jpa
+
+=== sharding-shardingsphere
+
+此模块使用配置文件的方式实现。配置项如下：
+
+[source,yaml]
+----
+----
+
+[NOTE]
+====
+所有实现目前仅支持单数据源
+====
+
+== HTTP 端点
 
 [source,httprequest]
 ----
 
-### 查询
-GET http://localhost:8080/person/1
+### Person:查询
+GET http://localhost:8080/person/7
 
-### 新增
+### Person:新增
 POST http://localhost:8080/person
 Content-Type: application/json
 
 {
-  "id": 6,
-  "name": "jcohy06",
-  "age": 30,
-  "province": "陕西"
+  "name": "jcohy11",
+  "age": 41,
+  "province": "西藏"
 }
 
-### 更新
+### Person:更新
 POST http://localhost:8080/person
 Content-Type: application/json
 
 {
   "id": 6,
   "name": "jcohy06",
-  "age": 33,
+  "age": 3344,
   "province": "杭州"
 }
 
-### 删除
+### Person:删除
 DELETE http://localhost:8080/person/1
 
-### 根据省份查询
-GET http://localhost:8080/person/province/杭州
+### Person:查询 Person:Proviince
+GET http://localhost:8080/person/province/2
+
+
+### PersonProvince:查询
+GET http://localhost:8080/province/7
+
+### PersonProvince:新增
+POST http://localhost:8080/province
+Content-Type: application/json
+
+{
+  "userId": 21,
+  "province": "北京",
+  "record": "北京急诊记录",
+  "remark": "备注"
+}
+
+### PersonProvince:更新
+POST http://localhost:8080/province
+Content-Type: application/json
+
+{
+  "id": 10,
+  "userId": 6,
+  "province": "北京",
+  "record": "北京急诊记录",
+  "remark": "备注"
+}
+
+### PersonProvince:删除
+DELETE http://localhost:8080/province/10
 ----
 
 == 测试
+
+打开
+[source,groovy]
+----
+----
+
+===
 
 在 sharding-demo 模块，启动 DemoApplication，系统在启动时会自动创建表和数据。
 
@@ -97,7 +154,6 @@ CommandLineRunner commandLineRunner() {
 }
 ----
 
-
 登录 h2 控制台。http://localhost:8080/h2-console/ ，账号密码都是：sa。我们可以看到，
 
 * PERSON 表：10 条记录。
@@ -108,8 +164,7 @@ CommandLineRunner commandLineRunner() {
 * PERSON_PROVINCE_5 表： 5 条记录，包含陕西，四川
 * PERSON_PROVINCE_6 表： 1 条记录，包含北京
 
-从上面可以看出，已经实现了分库分表，即同一省份的记录肯定在同一张表中。这里 PERSON_PROVINCE_5 表中包含了两个省份，时因为我们使用 哈希取余 算法。
-不同省份有可能会在一张表中，但一个省份只能在一张表中。
+从上面可以看出，已经实现了分库分表，即同一省份的记录肯定在同一张表中。这里 PERSON_PROVINCE_5 表中包含了两个省份，时因为我们使用 哈希取余 算法。 不同省份有可能会在一张表中，但一个省份只能在一张表中。
 
 另外，我们可以调用提供的增删改查接口来测试。
 

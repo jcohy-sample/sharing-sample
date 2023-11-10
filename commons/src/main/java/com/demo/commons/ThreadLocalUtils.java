@@ -15,20 +15,20 @@ public class ThreadLocalUtils {
 
 	private static final ThreadLocal<Map<String, Object>> threadLocal = ThreadLocal.withInitial(() -> new HashMap<>(4));
 
-	public static Map<String, Object> getThreadLocal(){
+	public static Map<String, Object> getThreadLocal() {
 		return threadLocal.get();
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T get(String key) {
 		Map<String, Object> map = threadLocal.get();
-		return (T)map.get(key);
+		return (T) map.get(key);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T get(String key,T defaultValue) {
+	public static <T> T get(String key, T defaultValue) {
 		Map<String, Object> map = threadLocal.get();
-		return map.get(key) == null ? defaultValue : (T)map.get(key);
+		return map.get(key) == null ? defaultValue : (T) map.get(key);
 	}
 
 	public static void set(String key, Object value) {
@@ -48,6 +48,6 @@ public class ThreadLocalUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> T remove(String key) {
 		Map<String, Object> map = threadLocal.get();
-		return (T)map.remove(key);
+		return (T) map.remove(key);
 	}
 }

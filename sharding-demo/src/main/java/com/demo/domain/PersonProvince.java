@@ -3,6 +3,8 @@ package com.demo.domain;
 import com.demo.commons.annotations.Sharding;
 import com.demo.commons.annotations.ShardingField;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -14,10 +16,11 @@ import javax.persistence.Id;
  * @since 2023.0.1
  */
 @Entity
-@Sharding
+@Sharding(size = 6)
 public class PersonProvince {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	private Integer userId;
@@ -30,6 +33,10 @@ public class PersonProvince {
 	private String remark;
 
 	public PersonProvince() {
+	}
+
+	public PersonProvince(Integer userId, String province, String record, String remark) {
+		this(null, userId, province, record, remark);
 	}
 
 	public PersonProvince(Integer id, Integer userId, String province, String record, String remark) {

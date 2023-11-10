@@ -1,7 +1,5 @@
-package com.demo.commons.support;
+package com.demo.commons.listener;
 
-import org.hibernate.event.spi.PreDeleteEvent;
-import org.hibernate.event.spi.PreDeleteEventListener;
 import org.hibernate.event.spi.PreLoadEvent;
 import org.hibernate.event.spi.PreLoadEventListener;
 
@@ -16,11 +14,18 @@ import org.springframework.stereotype.Component;
  * @since 2023.0.1
  */
 @Component
-public class PreLoadEventListenerImp implements PreLoadEventListener {
+public class PreLoadEventListenerImp implements PreLoadEventListener, ShardingEventHandler {
+
+	private PreLoadEvent event;
 
 	@Override
 	public void onPreLoad(PreLoadEvent event) {
 		System.out.println("onPreLoad ====");
-		System.out.println();
+		this.event = event;
+	}
+
+	@Override
+	public Object[] getPropertyValues() {
+		return null;
 	}
 }

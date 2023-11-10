@@ -2,9 +2,14 @@ package com.demo;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
+import com.demo.props.ShadingTableInfo;
+import com.demo.props.ShadingTableInfo.ShardingAlgorithms;
+import com.demo.props.ShardingProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
@@ -17,7 +22,11 @@ import org.apache.shardingsphere.sharding.api.config.strategy.sharding.ShardingS
 import org.apache.shardingsphere.sharding.api.config.strategy.sharding.StandardShardingStrategyConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 
 
 /**
@@ -29,37 +38,53 @@ import org.springframework.context.annotation.Bean;
  * @since 2023.0.1
  */
 @AutoConfiguration
+@EnableConfigurationProperties(ShardingProperties.class)
 public class ShardingAutoConfiguration {
 
-	@Bean(name = "sharding")
-	public DataSource dataSource() throws SQLException {
+	private ActualDataNode actualDataNode;
 
-		Map<String, DataSource> dataSource = Maps.of("dataSource", createDataSource());
+	private static final String shardingDatasource = "shardingDataSource";
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ActualDataNode actualDataNode() {
+		HashActualDataNode hashActualDataNode = new HashActualDataNode();
+		this.actualDataNode = hashActualDataNode;
+		return hashActualDataNode;
+	}
+
+	@Bean(name = shardingDatasource)
+	@DependsOn("actualDataNode")
+	public DataSource dataSource(ShardingProperties shardingProperties) throws SQLException {
+
+		Map<String, DataSource> dataSource = Maps.of(shardingDatasource, createDataSource());
 
 		ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
 
 		// 设置绑定表规则
-		shardingRuleConfig.setBindingTableGroups(Collections.singleton("person_province"));
+		List<ShadingTableInfo> tables = shardingProperties.getTables();
+		List<String> bindingTableGroups = tables
+				.stream().map(ShadingTableInfo::getTable).collect(Collectors.toList());
+		shardingRuleConfig.setBindingTableGroups(bindingTableGroups);
 
 		// 生成db分片算法配置
-		Properties properties = new Properties();
-		properties.put("sharding-count", "6");
-		shardingRuleConfig.getShardingAlgorithms()
-				.put("person-province-algorithm", new AlgorithmConfiguration("HASH_MOD", properties));
-
-
-		// 配置分表算法
-		Properties tableShardingAlgorithmProps = new Properties();
-		tableShardingAlgorithmProps.setProperty("strategy", "standard");
-		tableShardingAlgorithmProps.setProperty("algorithmClassName", "person-province-algorithm");
-		tableShardingAlgorithmProps.setProperty("shardingColumn", "province");
+		tables
+				.forEach(table -> {
+					ShardingAlgorithms algorithms = table.getShardingAlgorithms();
+					Properties props = new Properties();
+					props.put("sharding-count", algorithms.getShardingCount());
+					shardingRuleConfig.getShardingAlgorithms()
+							.put(algorithms.getName(), new AlgorithmConfiguration(algorithms.getShardingType().getValue(), props));
+				});
 
 		// 配置添加表规则
-		ShardingTableRuleConfiguration shardingTableRuleConfiguration = new ShardingTableRuleConfiguration("person_province", "dataSource.person_province_$->{0..5}");
-		ShardingStrategyConfiguration strategyConfiguration = new StandardShardingStrategyConfiguration("province", "person-province-algorithm");
-		shardingTableRuleConfiguration.setTableShardingStrategy(strategyConfiguration);
-		shardingRuleConfig.getTables().add(shardingTableRuleConfiguration);
-
+		tables.forEach(table -> {
+			String actualDataNodes = shardingDatasource + "." + table.getTable() + actualDataNode.actualDataNode(table.getShardingAlgorithms());
+			ShardingTableRuleConfiguration shardingTableRuleConfiguration = new ShardingTableRuleConfiguration(table.getTable(),actualDataNodes );
+			ShardingStrategyConfiguration strategyConfiguration = new StandardShardingStrategyConfiguration(table.getShardingColumn(), table.getShardingAlgorithms().getName());
+			shardingTableRuleConfiguration.setTableShardingStrategy(strategyConfiguration);
+			shardingRuleConfig.getTables().add(shardingTableRuleConfiguration);
+		});
 
 		return ShardingSphereDataSourceFactory.createDataSource(dataSource, Collections.singleton(shardingRuleConfig), new Properties());
 	}

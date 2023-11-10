@@ -1,0 +1,60 @@
+
+### Person:查询
+GET http://localhost:8080/person/7
+
+### Person:新增
+POST http://localhost:8080/person
+Content-Type: application/json
+
+{
+  "name": "jcohy11",
+  "age": 41,
+  "province": "西藏"
+}
+
+### Person:更新
+POST http://localhost:8080/person
+Content-Type: application/json
+
+{
+  "id": 6,
+  "name": "jcohy06",
+  "age": 3344,
+  "province": "杭州"
+}
+
+### Person:删除
+DELETE http://localhost:8080/person/1
+
+### Person:查询 Person:Proviince
+GET http://localhost:8080/person/province/2
+
+
+### PersonProvince:查询
+GET http://localhost:8080/province/7
+
+### PersonProvince:新增
+POST http://localhost:8080/province
+Content-Type: application/json
+
+{
+  "userId": 21,
+  "province": "北京",
+  "record": "北京急诊记录",
+  "remark": "备注"
+}
+
+### PersonProvince:更新
+POST http://localhost:8080/province
+Content-Type: application/json
+
+{
+  "id": 10,
+  "userId": 6,
+  "province": "北京",
+  "record": "北京急诊记录",
+  "remark": "备注"
+}
+
+### PersonProvince:删除
+DELETE http://localhost:8080/province/10

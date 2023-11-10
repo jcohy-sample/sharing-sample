@@ -6,23 +6,6 @@ create table if not exists `person`
     `province` varchar(225)
 );
 
-
-create table if not exists `person_0`
-(
-    id         integer AUTO_INCREMENT PRIMARY KEY,
-    `name`     varchar(225),
-    `age`      integer,
-    `province` varchar(225)
-);
-
-create table if not exists `person_1`
-(
-    id         integer AUTO_INCREMENT PRIMARY KEY,
-    `name`     varchar(225),
-    `age`      integer,
-    `province` varchar(225)
-);
-
 create table if not exists `person_province_0`
 (
     id         integer AUTO_INCREMENT PRIMARY KEY,

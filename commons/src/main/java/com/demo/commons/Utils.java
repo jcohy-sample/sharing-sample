@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 import com.demo.commons.annotations.ShardingField;
 
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Copyright: Copyright (c) 2023 <a href="https://www.jcohy.com" target="_blank">jcohy.com</a>
@@ -44,6 +43,7 @@ public class Utils {
 		}
 		return builder.toString().toLowerCase(Locale.ROOT);
 	}
+
 	private static boolean isUnderscoreRequired(final char before, final char current, final char after) {
 		return Character.isLowerCase(before) && Character.isUpperCase(current) && Character.isLowerCase(after);
 	}
@@ -63,7 +63,7 @@ public class Utils {
 
 	public static boolean isNotNull(Object... objects) {
 		for (Object object : objects) {
-			if(Objects.isNull(object)) {
+			if (Objects.isNull(object)) {
 				return false;
 			}
 		}

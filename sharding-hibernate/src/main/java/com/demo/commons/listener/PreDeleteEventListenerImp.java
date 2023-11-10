@@ -1,4 +1,4 @@
-package com.demo.commons.support;
+package com.demo.commons.listener;
 
 import org.hibernate.event.spi.PreDeleteEvent;
 import org.hibernate.event.spi.PreDeleteEventListener;
@@ -14,11 +14,20 @@ import org.springframework.stereotype.Component;
  * @since 2023.0.1
  */
 @Component
-public class PreDeleteEventListenerImp implements PreDeleteEventListener {
+public class PreDeleteEventListenerImp implements PreDeleteEventListener, ShardingEventHandler {
+
+	private PreDeleteEvent event;
 
 	@Override
-	public boolean onPreDelete(PreDeleteEvent e) {
+	public boolean onPreDelete(PreDeleteEvent event) {
 		System.out.println("onPreDelete ====");
-		throw new RuntimeException("Cannot delete");
+		this.event = event;
+		handlerPreEvent(event);
+		return false;
+	}
+
+	@Override
+	public Object[] getPropertyValues() {
+		return event.getDeletedState();
 	}
 }
