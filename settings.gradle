@@ -1,4 +1,4 @@
-rootProject.name = 'sharding-demo'
+rootProject.name = 'sharding-sample'
 
 include 'sharding-commons'
 include 'sharding-demo'
